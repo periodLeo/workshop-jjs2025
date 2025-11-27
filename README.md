@@ -8,7 +8,7 @@ First, you should run
 apptainer help
 ```
 To get the list of all available commands.
-As an end user, the more relevant commands are: *build, delete, exec, inspect, pull, run, run-help & shell*
+As an end user, the more relevant commands are: *build, exec, inspect, pull, run, run-help & shell*
 
 
 To begin, we will need to build the container's image.
