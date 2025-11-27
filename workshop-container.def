@@ -1,0 +1,64 @@
+Bootstrap: docker  
+From: debian:stable-slim
+
+%files
+    workshop-notebook.ipynb /notebook/
+
+%post -c /bin/bash
+
+    # --------------     SETUP PYTHON+LIBs       -------------- #
+    apt-get update -y
+    apt-get install -y python3 python3-venv python3-pip
+  
+    python3 -m venv ~/envs/ws-env
+    source ~/envs/ws-env/bin/activate
+    pip install pyscf geometric jupyterlab
+    deactivate
+    # --------------     DONE PYTHON+LIBs        -------------- #
+
+
+    apt-get install -y build-essential libgsl-dev git wget gcc gfortran  \
+                       libopenblas-openmp-dev libomp-dev cmake pkg-config \
+                       meson ninja-build 
+
+    # --------------     INSTALL XTB       -------------- #
+    # Download the source code
+    cd /opt
+    wget https://github.com/grimme-lab/xtb/archive/refs/tags/bleed.tar.gz --no-check-certificate
+    tar -xf bleed.tar.gz
+    cd xtb-bleed
+
+    # set env variable
+    export FC=gfortran
+    export CC=gcc
+    export GIT_SSL_NO_VERIFY=1
+    meson setup build --buildtype=release -Dlapack=openblas
+
+    ninja -C build
+    # --------------      DONE XTB         -------------- #
+
+%environment
+    source /root/envs/ws-env/bin/activate
+    export SSL_CERT_FILE=$(python3 -m certifi)
+    export PATH="$PATH:/opt/xtb-bleed/build/"
+
+%runscript
+    echo "You launched the container using the runscript!" 
+    jupyter lab
+
+%help
+Container for the Journée jeunes scientifiques workshop, occuring after the 2025 Diadem AG.
+
+    If you use "apptainer run <this-image>", it with start a Jupyter lab instance, that you can open in a brower.
+    If you use "apptainer exec <this-image> jupyter lab" it will do the exact same as the former.
+
+When the Jupyter lab start, it will provide you a local url that you can click or copy-paste, to open the jupyter lab in your brower
+
+    - To make the ASE library available, you should probably try to install it somewhere with pip.
+    
+    - Xtb is only needed for geometry optimization, if you already did it, you can try to comment the install part to save some time.
+   
+%labels
+    Owner Léo Orveillon
+    Author leo.orveillon@univ-grenoble-alpes.fr
+    Label Basic-of-containerisation-workshop-AG2025
