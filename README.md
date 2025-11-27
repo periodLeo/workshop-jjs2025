@@ -14,10 +14,10 @@ As an end user, the more relevant commands are: *build, delete, exec, inspect, p
 To begin, we will need to build the container's image.
 Using Apptainer, the command is
 ```bash
-apptainer build .sif .def
+apptainer build [image-name].sif [container-definition].def
 ```
 
-** are placeholders for the name you want/of the file.**
+**[Text] are placeholders for the name you want/of the file.**
 
 This can take a bit of time, as it needs to download and compile every piece of software needed.
 You can benefit from this time to read and try to understand the definition file. More information on the different sections [here](https://apptainer.org/docs/user/main/definition_files.html)
@@ -27,7 +27,7 @@ When it's done, you can first try to *inspect* the image to display some metadat
 You can also try to *run-help* to see meaningful information on how to use it.
 
 ```bash
-apptainer [inspect,run-help] .def 
+apptainer [inspect|run-help] .def 
 ```
 
-This should give you any information for what's left.
+This should give you enough information for what's left.
